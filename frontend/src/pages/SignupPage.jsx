@@ -1,24 +1,36 @@
-import {useState } from 'react'
-import React from 'react'
+import { useState } from 'react'
+import toast from 'react-hot-toast';
 import { useAuthStore } from '../Store/useAuthStore'
 import { Link } from 'react-router-dom'
+import AuthImagePattern from '../components/AuthImagePattern'
 import { MessageSquare, Mail, Lock, User, Eye, EyeOff, Loader } from 'lucide-react'
 
 const SignupPage = () => {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const [formData, setFormData] = React.useState({
+    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         password: '',
     });
     const {signup, isSigningUp} = useAuthStore();
-    const validateForm = () => {};
+    const validateForm = () => {
+      if(!formData.fullName.trim()) return toast.error("Full name is required");
+      if(!formData.email.trim()) return toast.error("Email is required");
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return toast.error("Invalid email");
+      if(!formData.password) return toast.error("Password is required");
+      if(formData.password.length < 6) return toast.error("Password must be at least 6 characters");
+      return true;
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
+        const success = validateForm();
+        if(success===true) {
+          signup(formData);
+        }
     };
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+      <div className="flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
@@ -110,8 +122,10 @@ const SignupPage = () => {
         </div>
       </div>
 
-      {/*right side image*/}
-      
+      <AuthImagePattern
+        title="Join our community"
+        subtitle="Connect with like-minded individuals and share your thoughts, ideas."
+      />
     </div>
   )
 }

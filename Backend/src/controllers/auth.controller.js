@@ -3,17 +3,17 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/User.model.js";
 import bcrypt from "bcryptjs";
 export const signup = async (req,res)=>{
-    const {email, fullname, password}= req.body;
+    const {email, fullName, password}= req.body;
     try {
         //haash password
-        if(!email || !fullname || !password){
+        if(!email || !fullName || !password){
             return res.status(400).json({message: "All fields are required"});
         }
          
         if(password.length < 6){
             return res.status(400).json({message: "Password must be at least 6 characters long"});
         }
-        const user= await User.findone({email}); 
+        const user= await User.findOne({email}); 
         if(user){
             return res.status(400).json({message: "Email already exists"});
         }
@@ -21,7 +21,7 @@ export const signup = async (req,res)=>{
         const hashedPassword= await bcrypt.hash(password, salt);
         const newUser= new User({
             email,
-            fullname,
+            fullName,
             password: hashedPassword
         });
         if(newUser){
@@ -31,7 +31,7 @@ export const signup = async (req,res)=>{
             res.status(201).json({
                 _id: newUser._id,
                 email: newUser.email,
-                fullname: newUser.fullname,
+                fullName: newUser.fullName,
                 profilePic: newUser.profilePic,
             });
         }
@@ -60,7 +60,7 @@ export const login = async(req,res)=>{
         res.status(200).json({
             _id: user._id,
             email: user.email,
-            fullname: user.fullname,
+            fullName: user.fullName,
             profilePic: user.profilePic,
         });
 

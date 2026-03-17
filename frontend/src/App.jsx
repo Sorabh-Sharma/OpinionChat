@@ -9,6 +9,7 @@ import SettingsPage from './pages/SettingsPage'
 import { useAuthStore } from './Store/useAuthStore'
 import { useEffect } from 'react'
 import { Loader } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
@@ -25,15 +26,18 @@ const App = () => {
 
   return (
 
-    <div>
+    <div className="flex flex-col h-screen overflow-hidden">
       <Navbar />
-      <Routes>
-        <Route path="/" element={authUser?<HomePage/>:<Navigate to="/login"/>} />
-        <Route path="/login" element={!authUser?<LoginPage/>:<Navigate to="/"/>} />
-        <Route path="/signup" element={!authUser?<SignupPage/>:<Navigate to="/"/>} />
-        <Route path="/profile" element={authUser?<ProfilePage/>:<Navigate to="/login"/>} />
-        <Route path="/settings" element={authUser?<SettingsPage/>:<Navigate to="/login"/>} />
-      </Routes>
+      <div className="flex-1 overflow-auto">
+        <Routes>
+          <Route path="/" element={authUser?<HomePage/>:<Navigate to="/login"/>} />
+          <Route path="/login" element={!authUser?<LoginPage/>:<Navigate to="/"/>} />
+          <Route path="/signup" element={!authUser?<SignupPage/>:<Navigate to="/"/>} />
+          <Route path="/profile" element={authUser?<ProfilePage/>:<Navigate to="/login"/>} />
+          <Route path="/settings" element={authUser?<SettingsPage/>:<Navigate to="/login"/>} />
+        </Routes>
+        <Toaster/>
+      </div>
     </div>
   )
 }
