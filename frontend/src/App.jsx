@@ -25,10 +25,8 @@ const App = () => {
   }
 
   return (
-
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div data-theme="retro">
       <Navbar />
-      <div className="flex-1 overflow-auto">
         <Routes>
           <Route path="/" element={authUser?<HomePage/>:<Navigate to="/login"/>} />
           <Route path="/login" element={!authUser?<LoginPage/>:<Navigate to="/"/>} />
@@ -37,7 +35,7 @@ const App = () => {
           <Route path="/settings" element={authUser?<SettingsPage/>:<Navigate to="/login"/>} />
         </Routes>
         <Toaster/>
-      </div>
+      
     </div>
   )
 }

@@ -95,6 +95,23 @@ export const updateProfilePic= async(req,res)=>{
         res.status(500).json({message: "Server error"});
     }
 }
+
+export const removeProfilePic = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilePic: "" },
+            { new: true }
+        ).select("-password");
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error("Error in removeProfilePic controller:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
 export const checkAuth= async(req,res)=>{
     try {
         res.status(200).json(req.user);
