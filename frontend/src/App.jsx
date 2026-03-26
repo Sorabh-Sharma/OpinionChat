@@ -1,43 +1,52 @@
-import React from 'react'
-import Navbar from './components/Navbar'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import HomePage from './pages/HomePage'
-import LoginPage from './pages/LoginPage'
-import SignupPage from './pages/SignupPage'
-import ProfilePage from './pages/ProfilePage'
-import SettingsPage from './pages/SettingsPage'
-import { useAuthStore } from './Store/useAuthStore'
-import { useEffect } from 'react'
-import { Loader } from 'lucide-react';
-import { Toaster } from 'react-hot-toast';
+import Navbar from "./components/Navbar";
+
+import HomePage from "./pages/HomePage";
+import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
+import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
+
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuthStore } from "./Store/useAuthStore";
+import { useThemeStore } from "./Store/useThemeStore";
+import { useEffect } from "react";
+
+import { Loader } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
-  useEffect(() => {checkAuth()}, [checkAuth]);
-  console.log("authUser in App.jsx", authUser);
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+  const { theme } = useThemeStore();
 
-  if(isCheckingAuth && !authUser) {
+  console.log({ onlineUsers });
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  console.log({ authUser });
+
+  if (isCheckingAuth && !authUser)
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="min-h-screen flex items-center justify-center bg-base-100">
         <Loader className="size-10 animate-spin" />
       </div>
-    )
-  }
+    );
 
   return (
-    <div data-theme="retro">
+    <div data-theme={theme} className="min-h-screen bg-base-100 text-base-content">
       <Navbar />
-        <Routes>
-          <Route path="/" element={authUser?<HomePage/>:<Navigate to="/login"/>} />
-          <Route path="/login" element={!authUser?<LoginPage/>:<Navigate to="/"/>} />
-          <Route path="/signup" element={!authUser?<SignupPage/>:<Navigate to="/"/>} />
-          <Route path="/profile" element={authUser?<ProfilePage/>:<Navigate to="/login"/>} />
-          <Route path="/settings" element={authUser?<SettingsPage/>:<Navigate to="/login"/>} />
-        </Routes>
-        <Toaster/>
-      
-    </div>
-  )
-}
 
-export default App
+      <Routes>
+        <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
+        <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />} />
+        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+      </Routes>
+
+      <Toaster />
+    </div>
+  );
+};
+export default App;
